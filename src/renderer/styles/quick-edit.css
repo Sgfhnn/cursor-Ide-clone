@@ -1,0 +1,66 @@
+/* Quick Edit Widget */
+.quick-edit-widget {
+    position: fixed;
+    z-index: 1000;
+    width: 400px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 8px;
+    animation: fadeIn 0.1s ease-out;
+}
+
+.quick-edit-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.quick-edit-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+.quick-edit-prefix {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 13px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.quick-edit-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    outline: none;
+    padding: 0;
+}
+
+.loading-spinner-small {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
