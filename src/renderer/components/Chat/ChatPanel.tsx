@@ -76,12 +76,12 @@ export const ChatPanel: React.FC = () => {
 
     // Set API keys on mount
     useEffect(() => {
-        const storedKey = localStorage.getItem('gemini_api_key') || DEFAULT_KEY;
+        const storedKey = localStorage.getItem('gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || DEFAULT_KEY;
         if (storedKey) {
             setApiKey(storedKey);
             aiService.setApiKey(storedKey);
         }
-        const storedFirecrawlKey = localStorage.getItem('firecrawl_api_key') || '';
+        const storedFirecrawlKey = localStorage.getItem('firecrawl_api_key') || import.meta.env.VITE_FIRECRAWL_API_KEY || '';
         if (storedFirecrawlKey) {
             setFirecrawlKey(storedFirecrawlKey);
             aiService.setFirecrawlKey(storedFirecrawlKey);
