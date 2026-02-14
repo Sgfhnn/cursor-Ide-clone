@@ -76,7 +76,15 @@ export const ChatPanel: React.FC = () => {
 
     // Set API keys on mount
     useEffect(() => {
-        const storedKey = localStorage.getItem('gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || DEFAULT_KEY;
+        const localKey = localStorage.getItem('gemini_api_key');
+        const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+        console.log('[DEBUG] Keys:', {
+            localKey: localKey ? 'Make ***' : 'null',
+            envKey: envKey ? 'Has Value' : 'undefined',
+            default: DEFAULT_KEY
+        });
+
+        const storedKey = localKey || envKey || DEFAULT_KEY;
         if (storedKey) {
             setApiKey(storedKey);
             aiService.setApiKey(storedKey);
@@ -93,7 +101,13 @@ export const ChatPanel: React.FC = () => {
         }
 
         const storedMode = localStorage.getItem('usage_mode') as 'trial' | 'custom' | null;
-        if (storedMode) {
+        // FORCE MIGRATION: If usage mode is 'trial', switch to 'custom'
+        if (storedMode === 'trial') {
+            console.log('[MIGRATION] Switching from Trial to Custom mode');
+            setUsageMode('custom');
+            aiService.setUsageMode('custom');
+            localStorage.setItem('usage_mode', 'custom');
+        } else if (storedMode) {
             setUsageMode(storedMode);
             aiService.setUsageMode(storedMode);
         }

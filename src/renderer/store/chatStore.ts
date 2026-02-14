@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ChatMessage, AIAction, PendingChange, AgenticChange, FileOperation } from '../types';
+import { ChatMessage, PendingChange, AgenticChange } from '../types';
 
 interface ChatStore {
     // State
@@ -49,7 +49,7 @@ export const useChatStore = create<ChatStore>((set) => ({
     scrapedDocs: [],
     provider: 'gemini',
     model: 'gemini-2.5-flash',
-    usageMode: 'trial',
+    usageMode: 'custom',
 
     // Actions
     addMessage: (message) => {

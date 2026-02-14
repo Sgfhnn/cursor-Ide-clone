@@ -26,8 +26,8 @@ class AIService {
     private openAIKey: string = '';
     private firecrawlKey: string = '';
     private ollamaUrl: string = 'http://localhost:11434';
-    private usageMode: 'trial' | 'custom' = 'trial';
-    private readonly DEFAULT_GEMINI_KEY = ''; // REMOVED: User must provide their own key
+    private usageMode: 'trial' | 'custom' = 'custom'; // Default to custom since we don't provide a key anymore
+    private readonly DEFAULT_GEMINI_KEY = ''; // REMOVED: User must provide key
 
     setUsageMode(mode: 'trial' | 'custom') {
         this.usageMode = mode;
@@ -60,7 +60,14 @@ class AIService {
 
     private refreshProvider() {
         if (this.providerType === 'gemini') {
-            const key = this.usageMode === 'trial' ? this.DEFAULT_GEMINI_KEY : (this.apiKey || this.DEFAULT_GEMINI_KEY);
+            // If in trial mode but no default key, fall back to user key
+            const useTrial = this.usageMode === 'trial' && this.DEFAULT_GEMINI_KEY;
+            const key = useTrial ? this.DEFAULT_GEMINI_KEY : (this.apiKey || this.DEFAULT_GEMINI_KEY);
+
+            if (!key) {
+                console.warn('Gemini Provider: No API Key available.');
+            }
+
             this.provider = new GeminiProvider({
                 apiKey: key,
                 modelName: this.modelName

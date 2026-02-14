@@ -9,8 +9,7 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
         firecrawlKey, setFirecrawlKey,
         openAIKey, setOpenAIKey,
         provider, setProvider,
-        model, setModel,
-        usageMode, setUsageMode
+        model, setModel
     } = useChatStore();
     const { user, logout } = useAuthStore();
     const [localKey, setLocalKey] = useState(apiKey);
@@ -18,7 +17,6 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
     const [localOpenAIKey, setLocalOpenAIKey] = useState(openAIKey);
     const [localProvider, setLocalProvider] = useState(provider);
     const [localModel, setLocalModel] = useState(model);
-    const [localUsageMode, setLocalUsageMode] = useState(usageMode);
 
     if (!isOpen) return null;
 
@@ -28,10 +26,9 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
         setOpenAIKey(localOpenAIKey);
         setProvider(localProvider);
         setModel(localModel);
-        setUsageMode(localUsageMode);
 
         // Update service immediately
-        aiService.setUsageMode(localUsageMode);
+        aiService.setUsageMode('custom');
         aiService.setApiKey(localKey);
         aiService.setFirecrawlKey(localFirecrawlKey);
         aiService.setOpenAIKey(localOpenAIKey);
@@ -42,7 +39,7 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
         if (localKey) localStorage.setItem('gemini_api_key', localKey);
         if (localFirecrawlKey) localStorage.setItem('firecrawl_api_key', localFirecrawlKey);
         if (localOpenAIKey) localStorage.setItem('openai_api_key', localOpenAIKey);
-        localStorage.setItem('usage_mode', localUsageMode);
+        localStorage.setItem('usage_mode', 'custom'); // Always enforce custom
 
         onClose();
     };
@@ -71,68 +68,7 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
                         </div>
                     </div>
 
-                    <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid var(--border-color)' }}>
-                        <div className="form-group">
-                            <label style={{ marginBottom: '12px', display: 'block', fontWeight: 600 }}>⚡ Usage Mode</label>
-                            <div className="usage-mode-toggle" style={{
-                                display: 'flex',
-                                background: 'var(--bg-tertiary)',
-                                padding: '4px',
-                                borderRadius: '10px',
-                                gap: '4px',
-                                marginBottom: '12px'
-                            }}>
-                                <button
-                                    className={`mode-btn ${localUsageMode === 'trial' ? 'active' : ''}`}
-                                    onClick={() => setLocalUsageMode('trial')}
-                                    style={{
-                                        flex: 1,
-                                        padding: '10px',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        background: localUsageMode === 'trial' ? 'var(--accent-color)' : 'transparent',
-                                        color: localUsageMode === 'trial' ? 'white' : 'var(--text-secondary)',
-                                        fontSize: '12px',
-                                        fontWeight: 600,
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
-                                    }}
-                                >
-                                    🆓 Free Trial
-                                </button>
-                                <button
-                                    className={`mode-btn ${localUsageMode === 'custom' ? 'active' : ''}`}
-                                    onClick={() => setLocalUsageMode('custom')}
-                                    style={{
-                                        flex: 1,
-                                        padding: '10px',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        background: localUsageMode === 'custom' ? 'var(--accent-color)' : 'transparent',
-                                        color: localUsageMode === 'custom' ? 'white' : 'var(--text-secondary)',
-                                        fontSize: '12px',
-                                        fontWeight: 600,
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
-                                    }}
-                                >
-                                    🔑 Custom Keys
-                                </button>
-                            </div>
-                            <div style={{
-                                padding: '12px',
-                                background: 'rgba(255, 255, 255, 0.03)',
-                                borderRadius: '8px',
-                                fontSize: '11px',
-                                color: 'var(--text-secondary)',
-                                lineHeight: '1.4'
-                            }}>
-                                {localUsageMode === 'trial'
-                                    ? "Using shared AI keys. Limited to 10 requests per day."
-                                    : "Using your own API keys. Unlimited requests (subject to your provider limits)."}
-                            </div>
-                        </div>
-                    </div>
+                    {/* Usage Mode Toggle Removed - Defaulting to Custom Keys */}
 
                     <div className="form-group" style={{ marginBottom: '24px' }}>
                         <label style={{ fontWeight: 600 }}>🤖 AI Provider</label>
@@ -157,14 +93,9 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
                         <div style={{ animation: 'fadeIn 0.2s ease', background: 'rgba(255, 255, 255, 0.02)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
                             <div className="form-group">
                                 <label style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>Gemini Model</label>
-                                <select
-                                    value={localModel}
-                                    onChange={(e) => setLocalModel(e.target.value)}
-                                    className="settings-select"
-                                >
-                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Fastest)</option>
-                                    <option value="gemini-pro">Gemini Pro (Smartest)</option>
-                                </select>
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash (Recommended)</option>
+                                <option value="gemini-3-flash">Gemini 3 Flash</option>
+                                <option value="gemini-3-pro">Gemini 3 Pro (Smartest)</option>
                             </div>
                             <div className="form-group" style={{ marginTop: '16px' }}>
                                 <label>API Key</label>
@@ -173,10 +104,9 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
                                     value={localKey}
                                     onChange={(e) => setLocalKey(e.target.value)}
                                     placeholder="AIza..."
-                                    disabled={localUsageMode === 'trial'}
                                 />
                                 <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '6px' }}>
-                                    {localUsageMode === 'trial' ? "Managed by system" : "Stored locally and never sent to our servers"}
+                                    Stored locally and never sent to our servers
                                 </small>
                             </div>
                         </div>
@@ -203,10 +133,9 @@ export const SettingsModal: React.FC<{ isOpen: boolean; onClose: () => void }> =
                                     value={localOpenAIKey}
                                     onChange={(e) => setLocalOpenAIKey(e.target.value)}
                                     placeholder="sk-..."
-                                    disabled={localUsageMode === 'trial'}
                                 />
                                 <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '6px' }}>
-                                    {localUsageMode === 'trial' ? "Managed by system" : "Stored locally and never sent to our servers"}
+                                    Stored locally and never sent to our servers
                                 </small>
                             </div>
                         </div>

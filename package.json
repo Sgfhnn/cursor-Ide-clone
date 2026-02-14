@@ -1,6 +1,7 @@
 {
   "name": "cursor-clone",
   "version": "1.0.0",
+  "author": "Polaris Team",
   "description": "AI-powered code editor for developers",
   "main": "dist/main/main.js",
   "scripts": {
@@ -50,7 +51,8 @@
       "output": "release"
     },
     "win": {
-      "target": "dir"
+      "target": "dir",
+      "verifyUpdateCodeSignature": false
     }
   }
 }
